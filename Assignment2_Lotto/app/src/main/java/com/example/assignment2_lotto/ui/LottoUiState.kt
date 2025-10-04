@@ -2,5 +2,6 @@ package com.example.assignment2_lotto.ui
 
 data class LottoUiState (
     val selectedNumbers: List<Int> = emptyList(),
-    val winningNumbers: Set<Int> = emptySet()
+    val winningNumbers: Set<Int> = emptySet(),
+    val resultMessage: String? = null
 )
