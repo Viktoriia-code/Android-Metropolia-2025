@@ -38,7 +38,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.assignment1_numberguessinggame.ui.theme.Assignment1_NumberGuessingGameTheme
-import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,10 +58,9 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameLayout() {
-    var secretNumber by remember { mutableStateOf(Random.nextInt(1, 101)) }
+    var game by remember { mutableStateOf(GuessingGame()) }
     var guessText by remember { mutableStateOf("") }
     var message by remember { mutableStateOf("") }
-    var guesses by remember { mutableStateOf(0) }
     var gameOver by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -115,14 +113,10 @@ fun GameLayout() {
                     if (guess == null) {
                         message = "Please enter a valid number"
                     } else {
-                        guesses++
-                        if (guess == secretNumber) {
-                            message = "$guess is correct! You guessed in $guesses tries."
+                        message = game.guess(guess)
+
+                        if (game.isCorrect(guess)) {
                             gameOver = true
-                        } else if (guess < secretNumber) {
-                            message = "$guess is too low, try again."
-                        } else {
-                            message = "$guess is too high, try again."
                         }
                     }
                     guessText = ""
@@ -137,8 +131,7 @@ fun GameLayout() {
             if (gameOver) {
                 Button(
                     onClick = {
-                        secretNumber = Random.nextInt(1, 101)
-                        guesses = 0
+                        game.newGame()
                         guessText = ""
                         message = ""
                         gameOver = false

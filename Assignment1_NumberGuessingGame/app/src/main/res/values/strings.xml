@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Number Guessing Game</string>
+    <string name="app_name">Number Guessing Game by Viktoriia</string>
     <string name="game_rule">Try to guess the secret number between 1 and 100.</string>
     <string name="input_label">Your guess</string>
 </resources>
