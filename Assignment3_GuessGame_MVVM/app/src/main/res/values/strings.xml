@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Number guessing game by Viktoriia</string>
+    <string name="input_label">Your guess</string>
+</resources>
