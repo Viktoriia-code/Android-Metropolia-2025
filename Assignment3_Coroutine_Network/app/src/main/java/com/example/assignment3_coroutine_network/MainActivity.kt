@@ -10,6 +10,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -50,12 +51,13 @@ fun ShowImage(url: URL, bitmapState: MutableState<Bitmap?>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
+            .safeContentPadding()
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Title
         Text(
-            text = "Assignment 3: Network with Coroutines",
+            text = "Assignment 4: Network with Coroutines",
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
             fontSize = 22.sp,
@@ -63,6 +65,14 @@ fun ShowImage(url: URL, bitmapState: MutableState<Bitmap?>) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
+        )
+
+        Text(
+            text = "This is a special test file",
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp)
         )
 
         // Show the link text
