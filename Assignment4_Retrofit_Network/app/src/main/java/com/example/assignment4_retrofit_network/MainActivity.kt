@@ -23,51 +23,67 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PresidentApp(viewModel: MyViewModel) {
     var selectedPresident by remember { mutableStateOf<String?>(null) }
-
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text("Finnish Presidents", style = MaterialTheme.typography.headlineMedium)
-        Spacer(Modifier.height(12.dp))
-
-        DataProvider.presidents.forEach { president ->
-            Text(
-                text = "${president.name} (${president.startDuty}-${president.endDuty})",
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        selectedPresident = president.name
-                        viewModel.clearHits()
-                        viewModel.getHits(president.name)
-                    }
-                    .padding(8.dp)
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
+                    Text(
+                        text = "Finnish Presidents",
+                        style = MaterialTheme.typography.headlineMedium
+                    )
+                },
+                colors = TopAppBarDefaults.largeTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
             )
         }
+    ) { innerPadding ->
+        Column(
+            modifier = Modifier.fillMaxSize().padding(innerPadding),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
-        Spacer(Modifier.height(20.dp))
+            DataProvider.presidents.forEach { president ->
+                Text(
+                    text = "${president.name} (${president.startDuty}-${president.endDuty})",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            selectedPresident = president.name
+                            viewModel.clearHits()
+                            viewModel.getHits(president.name)
+                        }
+                        .padding(8.dp)
+                )
+            }
 
-        selectedPresident?.let { name ->
-            when (viewModel.wikiUiState) {
-                null -> Text(
-                    text = "Loading data for $name...",
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
-                )
-                -1 -> Text(
-                    text = "Failed to fetch data for $name",
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
-                )
-                else -> Text(
-                    text = "Wikipedia links for $name: ${viewModel.wikiUiState}",
-                    style = MaterialTheme.typography.bodyLarge,
-                    textAlign = TextAlign.Center
-                )
+            Spacer(Modifier.height(20.dp))
+
+            selectedPresident?.let { name ->
+                when (viewModel.wikiUiState) {
+                    null -> Text(
+                        text = "Loading data for $name...",
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center
+                    )
+
+                    -1 -> Text(
+                        text = "Failed to fetch data for $name",
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center
+                    )
+
+                    else -> Text(
+                        text = "Wikipedia links for $name: ${viewModel.wikiUiState}",
+                        style = MaterialTheme.typography.bodyLarge,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
         }
     }
