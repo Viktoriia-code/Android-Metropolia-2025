@@ -7,12 +7,12 @@ import com.squareup.moshi.JsonClass
 data class MpDto(
     @Json(name = "personNumber") val personNumber: Int,
     @Json(name = "seatNumber")   val seatNumber: Int?,
-    @Json(name = "last")     val lastname: String,
-    @Json(name = "first")    val firstname: String,
+    @Json(name = "last")         val lastname: String,
+    @Json(name = "first")        val firstname: String,
     @Json(name = "party")        val party: String,
     @Json(name = "minister")     val minister: Boolean,
     @Json(name = "constituency") val constituency: String,
     @Json(name = "twitter")      val twitter: String?,
     @Json(name = "bornYear")     val bornYear: Int,
-    @Json(name = "picture")   val pictureUrl: String?
+    @Json(name = "picture")      val pictureUrl: String?
 )
