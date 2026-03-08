@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.example.assignment6_parliament_room.data.local.mp.MpEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

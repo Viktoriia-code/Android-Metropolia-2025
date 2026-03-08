@@ -3,7 +3,7 @@ package com.example.assignment6_parliament_room.ui
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -49,7 +49,7 @@ fun MpsNavGraph(
                                 popUpTo("mp_list") { inclusive = true }
                             }
                         },
-                        icon  = { Icon(Icons.Default.List, contentDescription = null) },
+                        icon  = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = null) },
                         label = { Text("MPs") },
                         colors = NavigationBarItemDefaults.colors(
                             selectedTextColor = MaterialTheme.colorScheme.onPrimary,
