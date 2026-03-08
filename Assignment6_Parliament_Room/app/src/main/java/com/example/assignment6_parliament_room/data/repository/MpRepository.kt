@@ -1,7 +1,7 @@
-package com.example.assignment6_parliament_room.data
+package com.example.assignment6_parliament_room.data.repository
 
-import com.example.assignment6_parliament_room.data.local.MpDao
-import com.example.assignment6_parliament_room.data.local.MpEntity
+import com.example.assignment6_parliament_room.data.local.mp.MpDao
+import com.example.assignment6_parliament_room.data.local.mp.MpEntity
 import com.example.assignment6_parliament_room.data.remote.MpsApiService
 import kotlinx.coroutines.flow.Flow
 import java.util.Calendar
@@ -23,16 +23,6 @@ class MpRepository(
     // ── Public read operations (return Flow so UI updates automatically) ──────────
 
     fun getAllMps(): Flow<List<MpEntity>> = mpDao.getAllMps()
-
-    fun getAllConstituencies(): Flow<List<String>> = mpDao.getAllConstituencies()
-
-    fun getAllParties(): Flow<List<String>> = mpDao.getAllParties()
-
-    fun getMpsByConstituency(constituency: String): Flow<List<MpEntity>> =
-        mpDao.getMpsByConstituency(constituency)
-
-    fun getMpsByParty(party: String): Flow<List<MpEntity>> =
-        mpDao.getMpsByParty(party)
 
     fun getMpById(personNumber: Int): Flow<MpEntity?> =
         mpDao.getMpById(personNumber)

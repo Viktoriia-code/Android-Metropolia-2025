@@ -1,9 +1,10 @@
-package com.example.assignment6_parliament_room.data.local
+package com.example.assignment6_parliament_room.data.local.rating
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.example.assignment6_parliament_room.data.local.mp.MpEntity
 
 @Entity(
     tableName = "ratings",

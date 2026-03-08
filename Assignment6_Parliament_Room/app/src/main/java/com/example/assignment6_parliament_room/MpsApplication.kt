@@ -3,8 +3,8 @@ package com.example.assignment6_parliament_room
 import android.app.Application
 import com.example.assignment6_parliament_room.data.local.MpsDatabase
 import com.example.assignment6_parliament_room.data.remote.MpsApiService
-import com.example.assignment6_parliament_room.data.MpRepository
-import com.example.assignment6_parliament_room.data.RatingRepository
+import com.example.assignment6_parliament_room.data.repository.MpRepository
+import com.example.assignment6_parliament_room.data.repository.RatingRepository
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import retrofit2.Retrofit

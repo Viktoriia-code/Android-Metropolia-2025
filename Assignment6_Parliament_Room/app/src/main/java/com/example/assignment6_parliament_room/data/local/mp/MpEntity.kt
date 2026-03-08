@@ -1,4 +1,4 @@
-package com.example.assignment6_parliament_room.data.local
+package com.example.assignment6_parliament_room.data.local.mp
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

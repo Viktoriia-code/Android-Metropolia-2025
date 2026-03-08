@@ -1,13 +1,17 @@
-package com.example.assignment6_parliament_room.data.local
+package com.example.assignment6_parliament_room.data.local.mp
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.example.assignment6_parliament_room.data.local.mp.MpEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface MpDao {
 
     // Save all MPs to the database (replace if they already exist)
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insertAll(mps: List<MpEntity>)
 
     // Get all MPs sorted by last name - returns Flow so UI updates automatically

@@ -1,7 +1,7 @@
-package com.example.assignment6_parliament_room.data
+package com.example.assignment6_parliament_room.data.repository
 
-import com.example.assignment6_parliament_room.data.local.RatingDao
-import com.example.assignment6_parliament_room.data.local.RatingEntity
+import com.example.assignment6_parliament_room.data.local.rating.RatingDao
+import com.example.assignment6_parliament_room.data.local.rating.RatingEntity
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -25,8 +25,8 @@ class RatingRepository(
         ratingDao.insert(
             RatingEntity(
                 mpPersonNumber = mpPersonNumber,
-                isPositive     = isPositive,
-                comment        = comment
+                isPositive = isPositive,
+                comment = comment
             )
         )
     }

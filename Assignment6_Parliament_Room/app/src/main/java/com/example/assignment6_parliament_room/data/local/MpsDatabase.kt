@@ -4,6 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.assignment6_parliament_room.data.local.mp.MpDao
+import com.example.assignment6_parliament_room.data.local.mp.MpEntity
+import com.example.assignment6_parliament_room.data.local.rating.RatingDao
+import com.example.assignment6_parliament_room.data.local.rating.RatingEntity
 
 @Database(
     entities = [MpEntity::class, RatingEntity::class],

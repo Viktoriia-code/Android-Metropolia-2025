@@ -22,10 +22,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.assignment6_parliament_room.MpsApplication
 import com.example.assignment6_parliament_room.R
-import com.example.assignment6_parliament_room.data.local.MpEntity
-import com.example.assignment6_parliament_room.data.local.RatingEntity
-import com.example.assignment6_parliament_room.data.age
-import com.example.assignment6_parliament_room.data.fullName
+import com.example.assignment6_parliament_room.data.local.mp.MpEntity
+import com.example.assignment6_parliament_room.data.local.rating.RatingEntity
+import com.example.assignment6_parliament_room.data.repository.age
+import com.example.assignment6_parliament_room.data.repository.fullName
 import java.text.SimpleDateFormat
 import java.util.*
 

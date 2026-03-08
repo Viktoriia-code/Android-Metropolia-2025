@@ -30,9 +30,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.assignment6_parliament_room.MpsApplication
 import com.example.assignment6_parliament_room.R
-import com.example.assignment6_parliament_room.data.local.MpEntity
-import com.example.assignment6_parliament_room.data.age
-import com.example.assignment6_parliament_room.data.fullName
+import com.example.assignment6_parliament_room.data.local.mp.MpEntity
+import com.example.assignment6_parliament_room.data.repository.age
+import com.example.assignment6_parliament_room.data.repository.fullName
 
 /**
  * The main list screen.
@@ -235,7 +235,7 @@ private fun MpRow(
             Text(mp.fullName(), fontWeight = FontWeight.SemiBold)
         },
         supportingContent = {
-            Text("$secondaryInfo · ${mp.age()} years old (born ${mp.bornYear})")
+            Text("$secondaryInfo · ${mp.age()} years old (b. ${mp.bornYear})")
         },
         leadingContent = {
             AsyncImage(

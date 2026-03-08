@@ -3,8 +3,8 @@ package com.example.assignment6_parliament_room.ui.screens.list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.assignment6_parliament_room.data.local.MpEntity
-import com.example.assignment6_parliament_room.data.MpRepository
+import com.example.assignment6_parliament_room.data.local.mp.MpEntity
+import com.example.assignment6_parliament_room.data.repository.MpRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
