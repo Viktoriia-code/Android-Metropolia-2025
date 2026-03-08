@@ -15,4 +15,8 @@ interface RatingDao {
     // Get all ratings for one MP, newest first
     @Query("SELECT * FROM ratings WHERE mpPersonNumber = :personNumber ORDER BY timestamp DESC")
     fun getRatingsForMp(personNumber: Int): Flow<List<RatingEntity>>
+
+    // Get ALL ratings across all MPs, newest first
+    @Query("SELECT * FROM ratings ORDER BY timestamp DESC")
+    fun getAllRatings(): Flow<List<RatingEntity>>
 }

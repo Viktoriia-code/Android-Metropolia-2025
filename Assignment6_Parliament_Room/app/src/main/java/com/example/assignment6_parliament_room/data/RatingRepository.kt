@@ -16,6 +16,10 @@ class RatingRepository(
     fun getRatingsForMp(personNumber: Int): Flow<List<RatingEntity>> =
         ratingDao.getRatingsForMp(personNumber)
 
+    // Get ALL ratings across every MP
+    fun getAllRatings(): Flow<List<RatingEntity>> =
+        ratingDao.getAllRatings()
+
     // Add a new rating
     suspend fun addRating(mpPersonNumber: Int, isPositive: Boolean, comment: String) {
         ratingDao.insert(

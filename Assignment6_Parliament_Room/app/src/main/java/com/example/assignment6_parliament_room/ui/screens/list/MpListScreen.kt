@@ -9,8 +9,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -38,6 +40,8 @@ import com.example.assignment6_parliament_room.data.fullName
 @Composable
 fun MpListScreen(
     app: MpsApplication,
+    darkTheme: Boolean,
+    onToggleTheme: () -> Unit,
     onMpClick: (Int) -> Unit
 ) {
     // Create ViewModel using our manual factory (no Hilt needed)
@@ -55,6 +59,13 @@ fun MpListScreen(
             TopAppBar(
                 title = { Text("Parliament Members") },
                 actions = {
+                    IconButton(onClick = onToggleTheme) {
+                        Icon(
+                            imageVector = if (darkTheme) Icons.Default.LightMode
+                            else Icons.Default.DarkMode,
+                            contentDescription = "Toggle theme"
+                        )
+                    }
                     IconButton(onClick = { viewModel.refresh() }) {
                         Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                     }
@@ -104,23 +115,20 @@ fun MpListScreen(
             }
 
             // The two-level list
-            TwoLevelList(groupedMps = groupedMps, onMpClick = onMpClick)
+            TwoLevelList(
+                groupedMps = groupedMps,
+                onMpClick = onMpClick,
+                groupBy = groupBy
+            )
         }
     }
 }
 
-/**
- * Two-level LazyColumn:
- * - Level 1: group headers (constituency or party name) - can be expanded/collapsed
- * - Level 2: MP rows inside each group
- *
- * We use a flat LazyColumn with both headers and rows interleaved,
- * and AnimatedVisibility to show/hide rows when a group is collapsed.
- */
 @Composable
 private fun TwoLevelList(
     groupedMps: Map<String, List<MpEntity>>,
-    onMpClick: (Int) -> Unit
+    onMpClick: (Int) -> Unit,
+    groupBy: GroupBy
 ) {
     // Remember which groups are expanded (all start expanded)
     val expandedGroups = remember { mutableStateMapOf<String, Boolean>() }
@@ -146,7 +154,7 @@ private fun TwoLevelList(
                     enter   = expandVertically(),
                     exit    = shrinkVertically()
                 ) {
-                    MpRow(mp = mp, onClick = { onMpClick(mp.personNumber) })
+                    MpRow(mp = mp, onClick = { onMpClick(mp.personNumber) }, groupBy = groupBy)
                 }
             }
         }
@@ -181,21 +189,33 @@ private fun GroupHeader(
 }
 
 @Composable
-private fun MpRow(mp: MpEntity, onClick: () -> Unit) {
+private fun MpRow(mp: MpEntity, onClick: () -> Unit, groupBy: GroupBy) {
+
+    val secondaryInfo = if (groupBy == GroupBy.PARTY) {
+        mp.constituency
+    } else {
+        mp.party
+    }
+
     ListItem(
         modifier = Modifier.clickable(onClick = onClick),
-        headlineContent   = { Text(mp.fullName(), fontWeight = FontWeight.SemiBold) },
-        supportingContent = { Text("${mp.party} · ${mp.age()} years old") },
-        leadingContent    = {
+        headlineContent = {
+            Text(mp.fullName(), fontWeight = FontWeight.SemiBold)
+        },
+        supportingContent = {
+            Text("$secondaryInfo · ${mp.age()} years old (born ${mp.bornYear})")
+        },
+        leadingContent = {
             AsyncImage(
-                model              = mp.imageUrl,
+                model = mp.imageUrl,
                 contentDescription = mp.fullName(),
-                contentScale       = ContentScale.Crop,
-                error              = painterResource(R.drawable.ic_person_placeholder),
-                placeholder        = painterResource(R.drawable.ic_person_placeholder),
-                modifier           = Modifier.size(48.dp).clip(CircleShape)
+                contentScale = ContentScale.Crop,
+                error = painterResource(R.drawable.ic_person_placeholder),
+                placeholder = painterResource(R.drawable.ic_person_placeholder),
+                modifier = Modifier.size(48.dp).clip(CircleShape)
             )
         }
     )
+
     HorizontalDivider(thickness = 0.5.dp)
 }
