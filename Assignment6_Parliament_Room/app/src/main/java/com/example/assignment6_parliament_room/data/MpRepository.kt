@@ -84,6 +84,10 @@ class MpRepository(
     private fun buildImageUrl(lastname: String, firstname: String, personNumber: Int): String {
         return "https://users.metropolia.fi/~peterh/edustajakuvat/${lastname}-${firstname}-web-${personNumber}.jpg"
     }
+
+    suspend fun setFavorite(personNumber: Int, isFavorite: Boolean) {
+        mpDao.setFavorite(personNumber, isFavorite)
+    }
 }
 
 /** Helper extension: calculates age from birth year. */

@@ -14,5 +14,6 @@ data class MpEntity(
     val constituency: String,
     val twitter: String?,
     val bornYear: Int,
-    val imageUrl: String?   // full URL built from lastname + firstname + personNumber
+    val imageUrl: String?,   // full URL built from lastname + firstname + personNumber
+    val isFavorite: Boolean = false
 )

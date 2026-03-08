@@ -37,4 +37,7 @@ interface MpDao {
     // Check how many MPs are in the database (used to decide whether to fetch from network)
     @Query("SELECT COUNT(*) FROM members_of_parliament")
     suspend fun count(): Int
+
+    @Query("UPDATE members_of_parliament SET isFavorite = :isFavorite WHERE personNumber = :personNumber")
+    suspend fun setFavorite(personNumber: Int, isFavorite: Boolean)
 }

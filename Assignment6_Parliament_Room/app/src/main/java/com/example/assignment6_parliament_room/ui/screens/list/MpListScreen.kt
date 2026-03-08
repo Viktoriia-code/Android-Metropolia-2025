@@ -12,6 +12,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -53,6 +55,7 @@ fun MpListScreen(
     val groupBy    by viewModel.groupBy.collectAsStateWithLifecycle()
     val isLoading  by viewModel.isLoading.collectAsStateWithLifecycle()
     val error      by viewModel.error.collectAsStateWithLifecycle()
+    val showFavoritesOnly by viewModel.showFavoritesOnly.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -95,6 +98,23 @@ fun MpListScreen(
                     onClick  = { viewModel.setGroupBy(GroupBy.PARTY) },
                     label    = { Text("By Party") }
                 )
+
+                Spacer(Modifier.weight(1f))
+
+                FilterChip(
+                    selected = showFavoritesOnly,
+                    onClick  = { viewModel.toggleFavoritesFilter() },
+                    label    = { Text("Only") },
+                    leadingIcon = {
+                        Icon(
+                            imageVector        = if (showFavoritesOnly) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                            contentDescription = null,
+                            modifier           = Modifier.size(16.dp),
+                            tint               = if (showFavoritesOnly) MaterialTheme.colorScheme.error
+                            else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                )
             }
 
             // Show error if any
@@ -118,7 +138,8 @@ fun MpListScreen(
             TwoLevelList(
                 groupedMps = groupedMps,
                 onMpClick = onMpClick,
-                groupBy = groupBy
+                groupBy = groupBy,
+                onToggleFavorite = { viewModel.toggleFavorite(it) }
             )
         }
     }
@@ -128,7 +149,8 @@ fun MpListScreen(
 private fun TwoLevelList(
     groupedMps: Map<String, List<MpEntity>>,
     onMpClick: (Int) -> Unit,
-    groupBy: GroupBy
+    groupBy: GroupBy,
+    onToggleFavorite: (MpEntity) -> Unit
 ) {
     // Remember which groups are expanded (all start expanded)
     val expandedGroups = remember { mutableStateMapOf<String, Boolean>() }
@@ -154,7 +176,12 @@ private fun TwoLevelList(
                     enter   = expandVertically(),
                     exit    = shrinkVertically()
                 ) {
-                    MpRow(mp = mp, onClick = { onMpClick(mp.personNumber) }, groupBy = groupBy)
+                    MpRow(
+                        mp = mp,
+                        onClick = { onMpClick(mp.personNumber) },
+                        groupBy = groupBy,
+                        onToggleFavorite = { onToggleFavorite(mp) }
+                    )
                 }
             }
         }
@@ -189,7 +216,12 @@ private fun GroupHeader(
 }
 
 @Composable
-private fun MpRow(mp: MpEntity, onClick: () -> Unit, groupBy: GroupBy) {
+private fun MpRow(
+    mp: MpEntity,
+    onClick: () -> Unit,
+    groupBy: GroupBy,
+    onToggleFavorite: () -> Unit
+) {
 
     val secondaryInfo = if (groupBy == GroupBy.PARTY) {
         mp.constituency
@@ -214,6 +246,16 @@ private fun MpRow(mp: MpEntity, onClick: () -> Unit, groupBy: GroupBy) {
                 placeholder = painterResource(R.drawable.ic_person_placeholder),
                 modifier = Modifier.size(48.dp).clip(CircleShape)
             )
+        },
+        trailingContent = {
+            IconButton(onClick = onToggleFavorite) {
+                Icon(
+                    imageVector        = if (mp.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = if (mp.isFavorite) "Remove from favorites" else "Add to favorites",
+                    tint               = if (mp.isFavorite) MaterialTheme.colorScheme.primary
+                    else MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     )
 

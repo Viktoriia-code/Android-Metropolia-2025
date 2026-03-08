@@ -161,6 +161,24 @@ private fun InfoSection(mp: MpEntity) {
                     ) { Text("@$handle") }
                 }
             }
+            if (mp.isFavorite) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector        = Icons.Default.Favorite,
+                        contentDescription = null,
+                        tint               = MaterialTheme.colorScheme.error,
+                        modifier           = Modifier.size(16.dp)
+                    )
+                    Text(
+                        text  = "Saved as favorite",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            }
         }
     }
 }

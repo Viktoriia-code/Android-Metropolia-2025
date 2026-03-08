@@ -24,16 +24,21 @@ class MpListViewModel(private val repository: MpRepository) : ViewModel() {
     private val _error = MutableStateFlow<String?>(null)
     val error: StateFlow<String?> = _error.asStateFlow()
 
+    // To show only favorite MPs
+    private val _showFavoritesOnly = MutableStateFlow(false)
+    val showFavoritesOnly: StateFlow<Boolean> = _showFavoritesOnly.asStateFlow()
+
     /**
      * The main data for the screen: a map of group name → list of MPs.
      * combine() merges two Flows into one - it re-runs whenever either changes.
      * stateIn() converts the Flow to a StateFlow that the UI can observe.
      */
     val groupedMps: StateFlow<Map<String, List<MpEntity>>> =
-        combine(repository.getAllMps(), _groupBy) { mps, grouping ->
+        combine(repository.getAllMps(), _groupBy, _showFavoritesOnly) { mps, grouping, favOnly ->
+            val filtered = if (favOnly) mps.filter { it.isFavorite } else mps
             when (grouping) {
-                GroupBy.CONSTITUENCY -> mps.groupBy { it.constituency }.toSortedMap()
-                GroupBy.PARTY        -> mps.groupBy { it.party }.toSortedMap()
+                GroupBy.CONSTITUENCY -> filtered.groupBy { it.constituency }.toSortedMap()
+                GroupBy.PARTY        -> filtered.groupBy { it.party }.toSortedMap()
             }
         }.stateIn(
             scope        = viewModelScope,
@@ -74,6 +79,14 @@ class MpListViewModel(private val repository: MpRepository) : ViewModel() {
 
     fun setGroupBy(value: GroupBy) {
         _groupBy.value = value
+    }
+
+    fun toggleFavoritesFilter() { _showFavoritesOnly.value = !_showFavoritesOnly.value }
+
+    fun toggleFavorite(mp: MpEntity) {
+        viewModelScope.launch {
+            repository.setFavorite(mp.personNumber, !mp.isFavorite)
+        }
     }
 
     // ── Factory ───────────────────────────────────────────────────────────────────
