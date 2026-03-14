@@ -10,4 +10,7 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-val ConnectedDeviceColor = Color(0xFF4CAF50)
+val Blue80 = Color(0xFFB5D4F4)
+val Blue40 = Color(0xFF185FA5)
+val BlueContainer = Color(0xFFE6F1FB)
+val OnBlueContainer = Color(0xFF0C447C)

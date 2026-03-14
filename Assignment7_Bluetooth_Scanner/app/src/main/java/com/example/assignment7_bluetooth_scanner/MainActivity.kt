@@ -10,8 +10,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
+import androidx.core.view.WindowCompat
 import com.example.assignment7_bluetooth_scanner.ui.ScannerScreen
+import com.example.assignment7_bluetooth_scanner.ui.theme.Assignment7_Bluetooth_ScannerTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
@@ -34,12 +35,13 @@ class MainActivity : ComponentActivity() {
 
         checkPermissions()
 
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
+
         setContent {
-            MaterialTheme {
+            Assignment7_Bluetooth_ScannerTheme {
                 ScannerScreen(
                     mBluetoothAdapter = mBluetoothAdapter,
-                    permissionsGranted = permissionsGranted,
-                    onRequestPermissions = { checkPermissions() }
+                    permissionsGranted = permissionsGranted
                 )
             }
         }
@@ -69,22 +71,5 @@ class MainActivity : ComponentActivity() {
         } else {
             permissionsGranted = true
         }
-    }
-
-    // Check if Bluetooth is available and enabled
-    private fun checkBluetooth(): Boolean {
-        // Check that adapter exists
-        if (mBluetoothAdapter == null) {
-            Log.d("DBG", "Bluetooth adapter not available")
-            return false
-        }
-
-        // Check that Bluetooth is turned on
-        if (!mBluetoothAdapter!!.isEnabled) {
-            Log.d("DBG", "Bluetooth is disabled")
-            return false
-        }
-
-        return true
     }
 }
