@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -20,20 +21,27 @@ import com.example.assignment6_parliament_room.MpsApplication
 import com.example.assignment6_parliament_room.ui.screens.detail.MpDetailScreen
 import com.example.assignment6_parliament_room.ui.screens.list.MpListScreen
 import com.example.assignment6_parliament_room.ui.screens.ratings.MyRatingsScreen
+import com.example.assignment6_parliament_room.ui.screens.settings.SettingsScreen
+import com.example.assignment6_parliament_room.ui.strings.AppLanguage
+import com.example.assignment6_parliament_room.ui.strings.LocalStrings
 
 @Composable
 fun MpsNavGraph(
     app: MpsApplication,
     navController: NavHostController,
     darkTheme: Boolean,
-    onToggleTheme: () -> Unit
+    onToggleTheme: () -> Unit,
+    selectedLanguage: AppLanguage,
+    onLanguageSelect: (AppLanguage) -> Unit
 ) {
+    val strings = LocalStrings.current
+
     // Track the current route to highlight the correct bottom tab
     val currentBackStack by navController.currentBackStackEntryAsState()
     val currentRoute = currentBackStack?.destination?.route
 
     // Hide the bottom bar on the detail screen
-    val showBottomBar = currentRoute in listOf("mp_list", "my_ratings")
+    val showBottomBar = currentRoute in listOf("mp_list", "my_ratings", "settings")
 
     Scaffold(
         bottomBar = {
@@ -50,7 +58,7 @@ fun MpsNavGraph(
                             }
                         },
                         icon  = { Icon(Icons.AutoMirrored.Filled.List, contentDescription = null) },
-                        label = { Text("MPs") },
+                        label = { Text(strings.parliamentMembersShort) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedTextColor = MaterialTheme.colorScheme.onPrimary,
                             unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
@@ -67,7 +75,24 @@ fun MpsNavGraph(
                             }
                         },
                         icon  = { Icon(Icons.Default.Star, contentDescription = null) },
-                        label = { Text("My Ratings") },
+                        label = { Text(strings.myRatings) },
+                        colors = NavigationBarItemDefaults.colors(
+                            selectedTextColor = MaterialTheme.colorScheme.onPrimary,
+                            unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                            indicatorColor = MaterialTheme.colorScheme.secondary,
+                            unselectedIconColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
+                            selectedIconColor = MaterialTheme.colorScheme.onPrimary
+                        )
+                    )
+                    NavigationBarItem(
+                        selected = currentRoute == "settings",
+                        onClick  = {
+                            navController.navigate("settings") {
+                                popUpTo("mp_list")
+                            }
+                        },
+                        icon  = { Icon(Icons.Default.Settings, contentDescription = null) },
+                        label = { Text(strings.settings) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedTextColor = MaterialTheme.colorScheme.onPrimary,
                             unselectedTextColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.6f),
@@ -115,6 +140,13 @@ fun MpsNavGraph(
                     onMpClick = { personNumber ->
                         navController.navigate("mp_detail/$personNumber")
                     }
+                )
+            }
+
+            composable("settings") {
+                SettingsScreen(
+                    selectedLanguage = selectedLanguage,
+                    onLanguageSelect = onLanguageSelect
                 )
             }
         }
