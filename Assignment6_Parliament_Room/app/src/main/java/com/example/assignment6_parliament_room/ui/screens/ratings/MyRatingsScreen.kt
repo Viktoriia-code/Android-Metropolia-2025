@@ -15,6 +15,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,6 +24,7 @@ import com.example.assignment6_parliament_room.MpsApplication
 import com.example.assignment6_parliament_room.R
 import com.example.assignment6_parliament_room.data.repository.age
 import com.example.assignment6_parliament_room.data.repository.fullName
+import com.example.assignment6_parliament_room.ui.strings.LocalStrings
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,6 +34,8 @@ fun MyRatingsScreen(
     app: MpsApplication,
     onMpClick: (Int) -> Unit
 ) {
+    val strings = LocalStrings.current
+
     val viewModel: MyRatingsViewModel = viewModel(
         factory = MyRatingsViewModel.Factory(
             ratingRepository = app.container.ratingRepository,
@@ -44,7 +48,7 @@ fun MyRatingsScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("My Ratings") },
+                title = { Text(strings.myRatings) },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor    = MaterialTheme.colorScheme.primary,
                     titleContentColor = MaterialTheme.colorScheme.onPrimary
@@ -55,7 +59,10 @@ fun MyRatingsScreen(
 
         if (items.isEmpty()) {
             Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text("No ratings yet. Go rate some MPs!")
+                Text(
+                    text      = strings.noRatingsMessage,
+                    textAlign = TextAlign.Center
+                )
             }
             return@Scaffold
         }
@@ -92,7 +99,7 @@ fun MyRatingsScreen(
                             Column {
                                 Text(mp.fullName(), fontWeight = FontWeight.SemiBold)
                                 Text(
-                                    "${mp.party} · ${mp.age()} years old (born ${mp.bornYear})",
+                                    "${mp.party} · ${mp.age()} ${strings.yearsOld} (${strings.born} ${mp.bornYear})",
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
@@ -132,7 +139,7 @@ fun MyRatingsScreen(
                         }
 
                         IconButton(onClick = { viewModel.deleteRating(rating) }, modifier = Modifier.size(32.dp)) {
-                            Icon(Icons.Default.Delete, "Delete",
+                            Icon(Icons.Default.Delete, strings.delete,
                                 tint = MaterialTheme.colorScheme.error, modifier = Modifier.size(18.dp))
                         }
                     }

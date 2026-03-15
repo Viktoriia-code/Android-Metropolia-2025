@@ -33,6 +33,7 @@ import com.example.assignment6_parliament_room.R
 import com.example.assignment6_parliament_room.data.local.mp.MpEntity
 import com.example.assignment6_parliament_room.data.repository.age
 import com.example.assignment6_parliament_room.data.repository.fullName
+import com.example.assignment6_parliament_room.ui.strings.LocalStrings
 
 /**
  * The main list screen.
@@ -46,6 +47,8 @@ fun MpListScreen(
     onToggleTheme: () -> Unit,
     onMpClick: (Int) -> Unit
 ) {
+    val strings = LocalStrings.current
+
     // Create ViewModel using our manual factory (no Hilt needed)
     val viewModel: MpListViewModel = viewModel(
         factory = MpListViewModel.Factory(app.container.mpRepository)
@@ -60,17 +63,17 @@ fun MpListScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Parliament Members") },
+                title = { Text(strings.parliamentMembers) },
                 actions = {
                     IconButton(onClick = onToggleTheme) {
                         Icon(
                             imageVector = if (darkTheme) Icons.Default.LightMode
                             else Icons.Default.DarkMode,
-                            contentDescription = "Toggle theme"
+                            contentDescription = strings.toggleTheme
                         )
                     }
                     IconButton(onClick = { viewModel.refresh() }) {
-                        Icon(Icons.Default.Refresh, contentDescription = "Refresh")
+                        Icon(Icons.Default.Refresh, contentDescription = strings.refresh)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -91,12 +94,12 @@ fun MpListScreen(
                 FilterChip(
                     selected = groupBy == GroupBy.CONSTITUENCY,
                     onClick  = { viewModel.setGroupBy(GroupBy.CONSTITUENCY) },
-                    label    = { Text("By Constituency") }
+                    label    = { Text(strings.byConstituency) }
                 )
                 FilterChip(
                     selected = groupBy == GroupBy.PARTY,
                     onClick  = { viewModel.setGroupBy(GroupBy.PARTY) },
-                    label    = { Text("By Party") }
+                    label    = { Text(strings.byParty) }
                 )
 
                 Spacer(Modifier.weight(1f))
@@ -104,7 +107,7 @@ fun MpListScreen(
                 FilterChip(
                     selected = showFavoritesOnly,
                     onClick  = { viewModel.toggleFavoritesFilter() },
-                    label    = { Text("Only") },
+                    label    = { Text(strings.only) },
                     leadingIcon = {
                         Icon(
                             imageVector        = if (showFavoritesOnly) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
@@ -195,6 +198,8 @@ private fun GroupHeader(
     isExpanded: Boolean,
     onClick: () -> Unit
 ) {
+    val strings = LocalStrings.current
+
     Surface(
         color    = MaterialTheme.colorScheme.secondaryContainer,
         modifier = Modifier.fillMaxWidth().clickable(onClick = onClick)
@@ -205,11 +210,11 @@ private fun GroupHeader(
         ) {
             Column(Modifier.weight(1f)) {
                 Text(name, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
-                Text("$count members", style = MaterialTheme.typography.bodySmall)
+                Text("$count ${strings.members}", style = MaterialTheme.typography.bodySmall)
             }
             Icon(
                 if (isExpanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
-                contentDescription = if (isExpanded) "Collapse" else "Expand"
+                contentDescription = if (isExpanded) strings.collapse else strings.expand
             )
         }
     }
@@ -222,6 +227,7 @@ private fun MpRow(
     groupBy: GroupBy,
     onToggleFavorite: () -> Unit
 ) {
+    val strings = LocalStrings.current
 
     val secondaryInfo = if (groupBy == GroupBy.PARTY) {
         mp.constituency
@@ -235,7 +241,7 @@ private fun MpRow(
             Text(mp.fullName(), fontWeight = FontWeight.SemiBold)
         },
         supportingContent = {
-            Text("$secondaryInfo · ${mp.age()} years old (b. ${mp.bornYear})")
+            Text("$secondaryInfo · ${mp.age()} ${strings.yearsOld} (${strings.born} ${mp.bornYear})")
         },
         leadingContent = {
             AsyncImage(
@@ -251,7 +257,7 @@ private fun MpRow(
             IconButton(onClick = onToggleFavorite) {
                 Icon(
                     imageVector        = if (mp.isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = if (mp.isFavorite) "Remove from favorites" else "Add to favorites",
+                    contentDescription = if (mp.isFavorite) strings.removeFromFavorites else strings.addToFavorites,
                     tint               = if (mp.isFavorite) MaterialTheme.colorScheme.primary
                     else MaterialTheme.colorScheme.onSurfaceVariant
                 )

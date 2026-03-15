@@ -26,6 +26,7 @@ import com.example.assignment6_parliament_room.data.local.mp.MpEntity
 import com.example.assignment6_parliament_room.data.local.rating.RatingEntity
 import com.example.assignment6_parliament_room.data.repository.age
 import com.example.assignment6_parliament_room.data.repository.fullName
+import com.example.assignment6_parliament_room.ui.strings.LocalStrings
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -39,6 +40,8 @@ fun MpDetailScreen(
     app: MpsApplication,
     onBack: () -> Unit
 ) {
+    val strings = LocalStrings.current
+
     val viewModel: MpDetailViewModel = viewModel(
         factory = MpDetailViewModel.Factory(
             personNumber     = personNumber,
@@ -54,10 +57,10 @@ fun MpDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(mp?.fullName() ?: "MP") },
+                title = { Text(mp?.fullName() ?: strings.pm) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = strings.back)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -71,7 +74,7 @@ fun MpDetailScreen(
             ExtendedFloatingActionButton(
                 onClick = viewModel::openDialog,
                 icon    = { Icon(Icons.Default.Star, null) },
-                text    = { Text("Add Rating") }
+                text    = { Text(strings.addRating) }
             )
         }
     ) { padding ->
@@ -92,13 +95,13 @@ fun MpDetailScreen(
             item { InfoSection(mp = mp!!) }
             item {
                 Text(
-                    "Ratings (${ratings.size})",
+                    "${strings.ratings} (${ratings.size})",
                     style      = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold
                 )
             }
             if (ratings.isEmpty()) {
-                item { Text("No ratings yet. Be the first!", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                item { Text(strings.noRatingsYet, color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
             items(ratings, key = { it.id }) { rating ->
                 RatingCard(rating = rating, onDelete = { viewModel.deleteRating(rating) })
@@ -117,6 +120,8 @@ fun MpDetailScreen(
 
 @Composable
 private fun ProfileHeader(mp: MpEntity) {
+    val strings = LocalStrings.current
+
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -132,7 +137,7 @@ private fun ProfileHeader(mp: MpEntity) {
         )
         Text(mp.fullName(), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
         if (mp.minister) {
-            AssistChip(onClick = {}, label = { Text("Minister") },
+            AssistChip(onClick = {}, label = { Text(strings.minister) },
                 leadingIcon = { Icon(Icons.Default.Star, null, Modifier.size(16.dp)) })
         }
     }
@@ -141,19 +146,20 @@ private fun ProfileHeader(mp: MpEntity) {
 @Composable
 private fun InfoSection(mp: MpEntity) {
     val uriHandler = LocalUriHandler.current
+    val strings = LocalStrings.current
 
     ElevatedCard(modifier = Modifier.fillMaxWidth()) {
         Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Details", style = MaterialTheme.typography.titleSmall,
+            Text(strings.details, style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
 
-            InfoRow("Party",        mp.party)
-            InfoRow("Constituency", mp.constituency)
-            InfoRow("Age",          "${mp.age()} years (born ${mp.bornYear})")
-            mp.seatNumber?.let { InfoRow("Seat number", "$it") }
+            InfoRow(strings.party,        mp.party)
+            InfoRow(strings.constituency, mp.constituency)
+            InfoRow(strings.age,          "${mp.age()} ${strings.yearsOld} (${strings.born} ${mp.bornYear})")
+            mp.seatNumber?.let { InfoRow(strings.seatNumber, "$it") }
             mp.twitter?.let { handle ->
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("Twitter / X:", style = MaterialTheme.typography.bodySmall,
+                    Text("${strings.twitterX}:", style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.width(110.dp))
                     TextButton(
                         onClick = { uriHandler.openUri("https://twitter.com/$handle") },
@@ -173,7 +179,7 @@ private fun InfoSection(mp: MpEntity) {
                         modifier           = Modifier.size(16.dp)
                     )
                     Text(
-                        text  = "Saved as favorite",
+                        text  = strings.savedAsFavorite,
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.error
                     )
@@ -194,6 +200,8 @@ private fun InfoRow(label: String, value: String) {
 
 @Composable
 private fun RatingCard(rating: RatingEntity, onDelete: () -> Unit) {
+    val strings = LocalStrings.current
+
     val dateStr = remember(rating.timestamp) {
         SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.getDefault()).format(Date(rating.timestamp))
     }
@@ -222,7 +230,7 @@ private fun RatingCard(rating: RatingEntity, onDelete: () -> Unit) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             IconButton(onClick = onDelete, modifier = Modifier.size(32.dp)) {
-                Icon(Icons.Default.Delete, "Delete", tint = MaterialTheme.colorScheme.error,
+                Icon(Icons.Default.Delete, strings.delete, tint = MaterialTheme.colorScheme.error,
                     modifier = Modifier.size(18.dp))
             }
         }
@@ -233,30 +241,31 @@ private fun RatingCard(rating: RatingEntity, onDelete: () -> Unit) {
 private fun AddRatingDialog(onDismiss: () -> Unit, onSubmit: (Boolean, String) -> Unit) {
     var isPositive by remember { mutableStateOf(true) }
     var comment    by remember { mutableStateOf("") }
+    val strings = LocalStrings.current
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Add Rating") },
+        title = { Text(strings.addRating) },
         text  = {
             Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(
                         selected = isPositive,
                         onClick  = { isPositive = true },
-                        label    = { Text("+ Positive") },
+                        label    = { Text("+ ${strings.positive}") },
                         modifier = Modifier.weight(1f)
                     )
                     FilterChip(
                         selected = !isPositive,
                         onClick  = { isPositive = false },
-                        label    = { Text("− Negative") },
+                        label    = { Text("− ${strings.negative}") },
                         modifier = Modifier.weight(1f)
                     )
                 }
                 OutlinedTextField(
                     value         = comment,
                     onValueChange = { comment = it },
-                    label         = { Text("Comment") },
+                    label         = { Text(strings.comment) },
                     minLines      = 2,
                     modifier      = Modifier.fillMaxWidth()
                 )
@@ -264,9 +273,9 @@ private fun AddRatingDialog(onDismiss: () -> Unit, onSubmit: (Boolean, String) -
         },
         confirmButton = {
             Button(onClick = { onSubmit(isPositive, comment) }, enabled = comment.isNotBlank()) {
-                Text("Save")
+                Text(strings.submit)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cancel") } }
+        dismissButton = { TextButton(onClick = onDismiss) { Text(strings.cancel) } }
     )
 }
